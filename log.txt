@@ -1,0 +1,28 @@
+hello.cpp: In function 'Node* init_list(int)':
+hello.cpp:15:7: error: 'i' was not declared in this scope
+  for (i = 0; i < num_nodes; i++) {
+       ^
+In file included from d:\mingw\include\stdio.h:69:0,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\cstdio:42,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\ext\string_conversions.h:43,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\basic_string.h:5402,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\string:52,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\locale_classes.h:40,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\bits\ios_base.h:41,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\ios:42,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\ostream:38,
+                 from d:\mingw\lib\gcc\mingw32\6.3.0\include\c++\iostream:39,
+                 from hello.cpp:1:
+hello.cpp: In function 'void reverse_list(Node*, int)':
+hello.cpp:28:26: error: conversion from 'int' to non-scalar type 'Node {aka node}' requested
+  Node* dummy_left, tmp = NULL;
+                          ^
+hello.cpp:32:2: error: 'ptr' was not declared in this scope
+  ptr = head->next;
+  ^~~
+hello.cpp:40:11: error: cannot convert 'Node {aka node}' to 'void*' for argument '1' to 'void free(void*)'
+   free(tmp);
+           ^
+hello.cpp:26:35: warning: unused parameter 'num_nodes' [-Wunused-parameter]
+ void reverse_list(Node* head, int num_nodes) {
+                                   ^~~~~~~~~
