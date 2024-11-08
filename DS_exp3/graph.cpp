@@ -14,6 +14,11 @@ class mGraph {
           e(0),
           adj(new std::vector<std::vector<int>>(n, std::vector<int>(n, 0))) {}
 
+    struct edge {
+        int u, v, val;
+        edge(int u, int v, int val = 0) : u(u), v(v), val(val) {}
+    };
+
     void destroy() {
         if (!adj) return;
         for (int i = 0; i < n; i++) adj->at(i).clear();
