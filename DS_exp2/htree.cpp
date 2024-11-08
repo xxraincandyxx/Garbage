@@ -27,29 +27,29 @@ class HuffmanTree {
     }
 
     std::string encode(const std::string& text) {
-        if(codemap.empty() || !root) return "";
+        if (codemap.empty() || !root) return "";
         return encoder(text);
     }
 
     std::string decode(const std::string& code) {
-        if(codemap.empty() || !root) return "";
+        if (codemap.empty() || !root) return "";
         std::string text = "";
         decoder(root, code, text, 0);
         return text;
     }
 
     void output_codemap() {
-        if(codemap.empty()) {
+        if (codemap.empty()) {
             std::cout << "None" << std::endl;
             return;
         }
-        for(const auto& [ch, str] : codemap) {
+        for (const auto& [ch, str] : codemap) {
             std::cout << "Character: " << ch << " Code: " << str << std::endl;
         }
     }
 
     void preorder() const {
-        if(root == nullptr) {
+        if (root == nullptr) {
             std::cout << "None" << std::endl;
             return;
         }
@@ -58,7 +58,7 @@ class HuffmanTree {
     }
 
     void inorder() const {
-        if(root == nullptr) {
+        if (root == nullptr) {
             std::cout << "None" << std::endl;
             return;
         }
@@ -67,7 +67,7 @@ class HuffmanTree {
     }
 
     void postorder() const {
-        if(root == nullptr) {
+        if (root == nullptr) {
             std::cout << "None" << std::endl;
             return;
         }
@@ -85,7 +85,7 @@ class HuffmanTree {
     std::unordered_map<char, std::string> codemap;
 
     void preorder_traversal(hfNode* node) const {
-        if(node == nullptr) return;
+        if (node == nullptr) return;
         std::cout << "Character: " << node->ch << ' ' << std::endl;
         std::cout << "freq: " << node->freq << std::endl << std::endl;
         preorder_traversal(node->left);
@@ -93,7 +93,7 @@ class HuffmanTree {
     }
 
     void inorder_traversal(hfNode* node) const {
-        if(node == nullptr) return;
+        if (node == nullptr) return;
         inorder_traversal(node->left);
         std::cout << "Character: " << node->ch << ' ' << std::endl;
         std::cout << "freq: " << node->freq << std::endl << std::endl;
@@ -101,7 +101,7 @@ class HuffmanTree {
     }
 
     void postorder_traversal(hfNode* node) const {
-        if(node == nullptr) return;
+        if (node == nullptr) return;
         postorder_traversal(node->left);
         postorder_traversal(node->right);
         std::cout << "Character: " << node->ch << ' ' << std::endl;
@@ -109,7 +109,7 @@ class HuffmanTree {
     }
 
     void rm_branch(hfNode* node) {
-        if(node == nullptr) return;
+        if (node == nullptr) return;
         rm_branch(node->left);
         rm_branch(node->right);
         delete node;
@@ -117,8 +117,8 @@ class HuffmanTree {
 
     void build_codemap(const hfNode* node, std::string str,
                        std::unordered_map<char, std::string>& code_map) {
-        if(node == nullptr) return;
-        if(node->left == nullptr && node->right == nullptr) {
+        if (node == nullptr) return;
+        if (node->left == nullptr && node->right == nullptr) {
             code_map[node->ch] = str;
         } else {
             build_codemap(node->left, str + "0", code_map);
@@ -132,10 +132,10 @@ class HuffmanTree {
         };
         std::priority_queue<hfNode*, std::vector<hfNode*>, decltype(comp)>
             minHeap(comp);
-        for(const auto& [ch, freq] : freq_map)
+        for (const auto& [ch, freq] : freq_map)
             minHeap.push(new hfNode(ch, freq));
 
-        while(minHeap.size() > 1) {
+        while (minHeap.size() > 1) {
             auto left = minHeap.top();
             minHeap.pop();
             auto right = minHeap.top();
@@ -150,23 +150,23 @@ class HuffmanTree {
     }
 
     std::string encoder(std::string text) {
-        if(codemap.empty() || !root) return "";
+        if (codemap.empty() || !root) return "";
         std::string code = "";
-        for(char ch : text) code += codemap[ch];
+        for (char ch : text) code += codemap[ch];
         return code;
     }
 
     void decoder(const hfNode* node, const std::string& code, std::string& text,
                  int cur) {
-        if(node->left == nullptr && node->right == nullptr) {
+        if (node->left == nullptr && node->right == nullptr) {
             text += node->ch;
             decoder(root, code, text, cur);
             return;
         }
-        if(code[cur] == '\0') return;
-        if(code[cur] == '0') {
+        if (code[cur] == '\0') return;
+        if (code[cur] == '0') {
             decoder(node->left, code, text, cur + 1);
-        } else if(code[cur] == '1') {
+        } else if (code[cur] == '1') {
             decoder(node->right, code, text, cur + 1);
         }
         return;
