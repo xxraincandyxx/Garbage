@@ -1,0 +1,10 @@
+2024-11-06 22:50:36,247 - INFO - arg: {'functionD': {'return_type': 'void', 'parameters': '无参数'}, 'functionC': {'return_type': 'int', 'parameters': [('x', 'int')]}, 'functionB': {'return_type': 'void', 'parameters': [('y', 'double')]}, 'functionA': {'return_type': 'void', 'parameters': '无参数'}}
+2024-11-06 22:50:36,249 - INFO - line: int main() {
+2024-11-06 22:50:36,250 - INFO - line: printf("In main\n");
+2024-11-06 22:50:36,250 - INFO - line: functionA();
+2024-11-06 22:50:36,251 - INFO - function name: functionA
+2024-11-06 22:50:36,252 - INFO - function body: 
+functionB(2.0);
+    functionD();
+2024-11-06 22:50:36,253 - INFO - line: return 0;
+2024-11-06 22:50:36,253 - INFO - line: }
