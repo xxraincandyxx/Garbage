@@ -213,7 +213,7 @@ class CodeParser:
                         continue
                     fct_name_lst.append(fn)
                     fct_name_set.add(fn)
-            self.merged_walkthrough_lst.append(" -> ".join(fct_name_lst) + " -> end")
+            self.merged_walkthrough_lst.append(" -> ".join(fct_name_lst))
 
         for idx in range(len(self.merged_conditions_lst)):
             if self.merged_conditions_lst[idx].startswith(" and "):

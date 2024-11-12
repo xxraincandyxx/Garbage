@@ -35,6 +35,9 @@ class FunctionStateCache:
     def __getitem__(self, key: str) -> Cache:
         return self.caches[key] if key in self.caches else None
 
+    def __iter__(self):
+        return iter(self.caches.values())
+
     def update(
         self,
         fct_name: str,

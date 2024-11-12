@@ -1,6 +1,8 @@
 import os
 import re
 import logging
+import tkinter as tk
+from tkinter import filedialog
 from typing import Optional
 
 
@@ -16,6 +18,19 @@ def load_cfile(filepath: str, verbose: bool = False) -> str:
         if not verbose:
             return re.sub(r"\s+", " ", src_code)
         return src_code
+
+
+def tk_load_cfile(tk_inputs) -> None:
+    fp = filedialog.askopenfilename(filetypes=[("C Files", "*.c")])
+    if not os.path.exists(fp):
+        raise FileNotFoundError(f"File {fp} is not found.")
+    try:
+        with open(fp, "r") as file:
+            src_code = file.read()
+            tk_inputs.delete("1.0", tk.END)
+            tk_inputs.insert(tk.END, src_code)
+    except Exception as e:
+        logger.error(f"Failed to load file: {e}")
 
 
 def shrink_code(code: str) -> str:
