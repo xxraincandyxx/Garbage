@@ -24,10 +24,11 @@ class CodeParser:
         self.relatives_lst = []
 
         self.patterns = {
-            "if": r"\bif\s*\(.*?\)\s*{.*?}",
+            # if": r"\bif\s*\(.*?\)\s*{.*?}",
+            "if": r"if\s*\([^)]*\)\s*{[^{}]*(?:{[^{}]*}[^{}]*)*}",
             "else": r"\belse\s*{.*?}",
             "assign_fct": r"(?:(?:int|float|double|char|void|long|short|unsigned|signed)\s+)?(\w+)\s*=\s*(\w+)\s*\(",
-            "call_fct": r"(\w+)\s*\(",
+            "call_fct": r"(\w+)\s*\((.*?)\)",
             "statement": r"\b\w+\s+.*?;",
         }
 
@@ -46,7 +47,8 @@ class CodeParser:
         #            5 | -- assigning function name
         #            6 | call function statement
         #            7 | -- called function name
-        #            8 | statement -- return
+        #            8 | -- called function arguments
+        #            9 | statement -- return
         self.combined_pattern = re.compile(
             f"({self.patterns['if']})|({self.patterns['else']})|({self.patterns['assign_fct']})"
             f"|({self.patterns['call_fct']})|({self.patterns['statement']})",
@@ -107,23 +109,31 @@ class CodeParser:
 
         def dps(fct_path: str, content: str, conditions: str) -> None:
             for match in self.combined_pattern.finditer(content):
-                logger.debug(f"DEBUG MATCH: {match}")
+                # logger.debug(f"DEBUG MATCH: {match}")
 
                 if match.group(1):  # if block
                     if_block = match.group(1)
                     logger.debug(f"if block: {if_block.strip()}")
+                    if_block = shrink_code(str(if_block))
                     condition = self.condition_pattern.search(if_block)
-                    dps(fct_path, match.group(1), f"{conditions} and {condition}")
+                    condition = condition.group(1) if condition else None
+                    if_body = self.extract_if_block(if_block)
+                    logger.debug(f"if body: {if_body}")
+                    dps(fct_path, if_body, f"{conditions} and {condition}")
                     continue
 
                 if match.group(2):  # else block
                     else_block = match.group(2)
                     logger.debug(f"else block: {else_block.strip()}")
-                    condition = self.condition_pattern.search(if_block)
-                    dps(fct_path, else_block, f"{conditions} and not {condition}")
+                    else_block = shrink_code(str(else_block))
+                    condition = self.condition_pattern.search(if_block) if if_block is not None else None
+                    condition = condition.group(1) if condition else None
+                    else_body = self.extract_else_block(else_block)
+                    logger.debug(f"else body: {else_body}")
+                    dps(fct_path, else_body, f"{conditions} and not {condition}")
                     continue
 
-                if match.group(3):  # assign function, this occupies 2 groups
+                if match.group(3):  # assign function, occupies 3 groups
                     assign_block = match.group(3)
                     logger.debug(f"assign func: {assign_block.strip()}")
                     assign_match = re.findall(self.patterns["assign_fct"], assign_block)
@@ -137,30 +147,35 @@ class CodeParser:
                         call_fct_cache = self.fct_cache[func_name]
                         if call_fct_cache is None:
                             logger.warning(f"Failed to find function state `{func_name}`.")
-                            continue
                         else:
                             dps(fct_path + " -> " + func_name, call_fct_cache.fct_content, conditions)
-                            continue
+                        continue
 
-                if match.group(6):  # call function
+                if match.group(6):  # call function, occupies 3 groups
                     call_block = match.group(6)
                     logger.debug(f"call func: {call_block.strip()}")
                     call_match = re.findall(self.patterns["call_fct"], call_block)
                     if call_match:
-                        call_fct_name = call_match[0]
+                        call_fct_name, var = call_match[0]
                         logger.debug(f"call function: {call_fct_name}")
 
                         call_fct_cache = self.fct_cache[call_fct_name]
                         if call_fct_cache is None:
                             logger.warning(f"Failed to find function state `{call_fct_name}`.")
-                            continue
                         else:
+                            # fast replace
+                            if call_fct_cache.fct_args != {}:
+                                arg = list(call_fct_cache.fct_args.keys())[0]
+                                logger.debug(f"args: var - {var}  arg - {arg}")
+                                self._fast_replace(call_fct_cache.fct_name, var, arg)
+                                logger.debug(f"replaced content preview: {call_fct_cache.fct_content}")
+
                             dps(fct_path + " -> " + call_fct_name, call_fct_cache.fct_content, conditions)
-                            continue
+                        continue
 
                 # return value or none
-                if match.group(8):
-                    norm_block = match.group(8)
+                if match.group(9):
+                    norm_block = match.group(9)
                     logger.debug(f"statement: {norm_block.strip()}")
                     return_match = re.search(self.return_pattern, norm_block)
                     if not return_match:
@@ -191,7 +206,7 @@ class CodeParser:
             fct_name_set = set([])
             fct_name_lst = []
             for idx, fct_path_lst in enumerate(self.walkthrough_lst):
-                if self.conditions_lst[idx] != cond:
+                if not self.conditions_lst[idx] in cond:
                     continue
                 for fn in fct_path_lst:
                     if fn in fct_name_set:
@@ -200,8 +215,12 @@ class CodeParser:
                     fct_name_set.add(fn)
             self.merged_walkthrough_lst.append(" -> ".join(fct_name_lst) + " -> end")
 
+        for idx in range(len(self.merged_conditions_lst)):
+            if self.merged_conditions_lst[idx].startswith(" and "):
+                self.merged_conditions_lst[idx] = self.merged_conditions_lst[idx].replace(" and ", "", 1)
+
     # deprecated
-    def split_code(self, code):
+    def _split_code(self, code):
         match = self.split_ie_pattern.search(code)
         if match:
             if_else_block = match.group(1)
@@ -247,3 +266,20 @@ class CodeParser:
         for type_name, var in args:
             args_dict[var] = type_name
         return args_dict
+
+    def extract_function_arguments(self, function_call):
+        # Pattern to match arguments inside parentheses
+        pattern = r"\w+\s*\((.*?)\)"
+        match = re.search(pattern, function_call)
+        return match.group(1) if match else ""
+
+    def get_argument_list(self, function_call):
+        args_string = self.extract_function_arguments(function_call)
+        # Handle nested parentheses and commas within strings
+        pattern = r',\s*(?=(?:[^"\']*["\'][^"\']*["\'])*[^"\']*$)'
+        return [arg.strip() for arg in re.split(pattern, args_string)] if args_string else []
+
+    def _fast_replace(self, fct_name: str, var: str, arg: str) -> None:
+        self.fct_cache[fct_name].fct_content = (
+            self.fct_cache[fct_name].fct_content.replace(f"({arg}", f"({var}").replace(f"{arg})", f"{var})")
+        )
