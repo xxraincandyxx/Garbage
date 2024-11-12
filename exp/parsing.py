@@ -3,7 +3,7 @@ import re
 import logging
 from typing import Dict, List, Tuple
 
-from utils import load_cfile, btNode
+from utils import load_cfile, shrink_code
 from cache_utils import FunctionStateCache, Cache
 
 
@@ -31,7 +31,6 @@ class CodeParser:
             "statement": r"\b\w+\s+.*?;",
         }
 
-        self.contents_pattern = re.compile(r"\b\w+\s+\w+\s*\([^)]*\)\s*{([^{}]*(?:{[^{}]*}[^{}]*)*)}")
         self.variable_pattern = re.compile(r"\b(int|float|double|char)\s+(\w+)\s*=\s*([^;]+);")
         self.function_pattern = re.compile(r"\b(\w+)\s+(\w+)\s*\((.*?)\)\s*{")
         self.argument_pattern = re.compile(r"\b(\w+)\s+(\w+)(?:\s*,\s*)?")
@@ -54,17 +53,19 @@ class CodeParser:
             re.DOTALL,
         )
 
-        # deprecated
-        self.split_ie_pattern = re.compile(
-            r"(if\s*\([^)]*\)\s*{[^{}]*(?:{[^{}]*}[^{}]*)*}\s*else\s*{[^{}]*(?:{[^{}]*}[^{}]*)*})"
-        )
-        self.ie_block_pattern = re.compile(
-            r"if\s*\(([^)]*)\)\s*({[^{}]*(?:{[^{}]*}[^{}]*)*})\s*else\s*({[^{}]*(?:{[^{}]*}[^{}]*)*})"
-        )
-
         self.control_keywords = {"if", "while", "for", "switch"}
 
-        contents_lst = re.findall(self.contents_pattern, src_code)
+        # deprecated
+        # self.contents_pattern = re.compile(r"\b\w+\s+\w+\s*\([^)]*\)\s*{([^{}]*(?:{[^{}]*}[^{}]*)*)}")
+        # self.contents_pattern = re.compile(r'(?s)(?<=\{)(.*?)(?=\}(?:\s*\n*[^\}]|$))')
+        # self.split_ie_pattern = re.compile(
+        #     r"(if\s*\([^)]*\)\s*{[^{}]*(?:{[^{}]*}[^{}]*)*}\s*else\s*{[^{}]*(?:{[^{}]*}[^{}]*)*})"
+        # )
+        # self.ie_block_pattern = re.compile(
+        #     r"if\s*\(([^)]*)\)\s*({[^{}]*(?:{[^{}]*}[^{}]*)*})\s*else\s*({[^{}]*(?:{[^{}]*}[^{}]*)*})"
+        # )
+
+        contents_lst = self._extract_all_function_bodies(src_code)
         for idx, match in enumerate(self.function_pattern.finditer(src_code)):
             return_type, name, args = match.groups()
             content = contents_lst[idx]
@@ -112,14 +113,14 @@ class CodeParser:
                     if_block = match.group(1)
                     logger.debug(f"if block: {if_block.strip()}")
                     condition = self.condition_pattern.search(if_block)
-                    dps(fct_path, match.group(1), conditions + " and " + condition)
+                    dps(fct_path, match.group(1), f"{conditions} and {condition}")
                     continue
 
                 if match.group(2):  # else block
                     else_block = match.group(2)
                     logger.debug(f"else block: {else_block.strip()}")
                     condition = self.condition_pattern.search(if_block)
-                    dps(fct_path, else_block, conditions + " and not " + condition)
+                    dps(fct_path, else_block, f"{conditions} and not {condition}")
                     continue
 
                 if match.group(3):  # assign function, this occupies 2 groups
@@ -213,6 +214,30 @@ class CodeParser:
                 "after": after_block,
             }
         return None
+
+    def _extract_all_function_bodies(self, code):
+        pattern = r"(?s)(\w+\s*\([^)]*\)\s*{)((?:[^{}]|{(?:[^{}]|{[^{}]*})*})*})"
+        matches = re.finditer(pattern, code)
+        bodies = []
+
+        for match in matches:
+            full_match = match.group(2)
+            body = full_match[1:-1].strip()
+            bodies.append(body)
+
+        return bodies
+
+    def extract_if_block(self, code):
+        # Pattern for if block content
+        if_pattern = r"if\s*\([^)]*\)\s*{([^{}]*(?:{[^{}]*}[^{}]*)*)}"
+        match = re.search(if_pattern, code)
+        return match.group(1).strip() if match else ""
+
+    def extract_else_block(self, code):
+        # Pattern for else block content
+        else_pattern = r"else\s*{([^{}]*(?:{[^{}]*}[^{}]*)*)}"
+        match = re.search(else_pattern, code)
+        return match.group(1).strip() if match else ""
 
     def get_function_calls(self, content: str) -> List[str]:
         return re.findall(self.call_fct_pattern, content)
