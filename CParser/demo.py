@@ -78,14 +78,6 @@ class Cache:
 
 
 @dataclass
-class Cache:
-    fct_name: str
-    fct_content: str
-    type_name: str
-    fct_args: Dict[str, str]
-
-
-@dataclass
 class DOCS_EN:
     _SWITCHER_: str = "切换到中文"
     _WHILE_: str = "While"
