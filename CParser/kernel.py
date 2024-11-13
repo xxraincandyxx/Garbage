@@ -2,11 +2,12 @@ import os
 import re
 import logging
 import tkinter as tk
-from typing import Optional, List, Any
+from typing import Optional, Union, List, Any
 
+from cache_utils import FunctionStateCache
 from parsing import CodeParser
-from cache_utils import FunctionStateCache, Cache
 from utils import load_cfile
+from docs import *
 
 
 logger = logging.getLogger(__name__)
@@ -15,6 +16,7 @@ logger = logging.getLogger(__name__)
 class Core:
     def __init__(
         self,
+        DOCS: Union[DOCS_CN, DOCS_EN],
         src_code: Optional[Any] = None,
         tk_inputs: Optional[Any] = None,
         tk_outputs: Optional[Any] = None,
@@ -22,6 +24,7 @@ class Core:
         output_walkthroughs: Optional[Any] = None,
         output_relatives: Optional[Any] = None,
     ) -> None:
+        self.DOCS = DOCS
         self.src_code = tk_inputs.get("1.0", tk.END) if src_code is None else src_code
         logger.debug(f"src_code: {self.src_code}")
         if self.src_code is None or self.src_code == "" or self.src_code == "\n":
@@ -58,18 +61,19 @@ class Core:
             args = (
                 ", ".join([f"{dtype} {var}" for var, dtype in cache.fct_args.items()])
                 if cache.fct_args is not None
-                else ""
+                else f"{self.DOCS._NONE_}"
             )
             args_format = (
                 ", ".join([f"{var} ({dtype})" for var, dtype in cache.fct_args.items()])
                 if cache.fct_args is not None
-                else ""
+                else f"{self.DOCS._NONE_}"
             )
             fct_state_lst.append(
-                f"{cache.type_name} {cache.fct_name}({args}): Function Name: {cache.fct_name}, Arguments: {args_format}"
+                f"{cache.type_name} {cache.fct_name}({args if args != "" else f"{self.DOCS._NONE_}"}): {self.DOCS._FUNCTION_NAME_}: "
+                f"{cache.fct_name}, {self.DOCS._ARGUMENT_}: {args_format if args_format != "" else f"{self.DOCS._NONE_}"}"
             )
         if fct_state_lst == []:
-            fct_state_lst.append("None")
+            fct_state_lst.append(f"{self.DOCS._NONE_}")
         return fct_state_lst
 
     def _preprocessing_before_output(self) -> List[str]:
@@ -78,23 +82,46 @@ class Core:
         relatives = self.parser.relatives_lst
 
         outputs = []
-        outputs.append("Function States: ")
+        outputs.append(f"{self.DOCS._FUNCTION_STATES_}: ")
         fct_state_lst = self._format_fct_statements()
         outputs.extend(fct_state_lst)
         outputs.append("")
 
-        outputs.append("Function Reference: ")
+        outputs.append(f"{self.DOCS._FUNCTION_REFS_}: ")
         for cond, call_path in zip(conditions, walkthroughs):
             if cond == "":
                 outputs.append(call_path)
                 continue
-            outputs.append(f"When {cond}: {call_path}")
+
+            cond = self._format_cond(cond)
+            outputs.append(f"{self.DOCS._WHILE_} {cond} {self.DOCS._END_WHILE_}: {call_path}")
         outputs.append("")
 
-        outputs.append("Arguments Relations: ")
+        outputs.append(f"{self.DOCS._ARGUMENT_RELAS_}: ")
         if relatives == []:
-            outputs.append("None")
+            outputs.append(f"{self.DOCS._NONE_}")
         else:
             for rela in relatives:
                 outputs.append(f"{rela}")
         return outputs
+
+    def _format_cond(self, cond: str) -> str:
+        cond_lst: List[str] = cond.split(" and ")
+        for idx in range(len(cond_lst)):
+            if "not" in cond_lst[idx]:
+                logger.debug(f"prev cond batch: {cond_lst[idx]}")
+                cond_lst[idx] = cond_lst[idx].replace("not ", "")
+                if "<" in cond_lst[idx] or "<=" in cond_lst[idx]:
+                    cond_lst[idx] = cond_lst[idx].replace("<", ">=").replace("<=", ">")
+                    logger.debug(f"post cond batch: {cond_lst[idx]}")
+                    continue
+                if ">" in cond_lst[idx] or ">=" in cond_lst[idx]:
+                    cond_lst[idx] = cond_lst[idx].replace(">", "<=").replace(">=", "<")
+                    logger.debug(f"post cond batch: {cond_lst[idx]}")
+                    continue
+                if "==" in cond_lst[idx]:
+                    cond_lst[idx] = cond_lst[idx].replace("==", "!=")
+                else:
+                    cond_lst[idx] = cond_lst[idx].replace("!=", "==")
+                logger.debug(f"post cond batch: {cond_lst[idx]}")
+        return f" {self.DOCS._AND_} ".join(cond_lst)

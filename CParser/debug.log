@@ -1,0 +1,353 @@
+2024-11-13 10:42:59,561 - DEBUG - src_code: #include <stdio.h>
+
+int functionB(int x) {
+    printf("In functionB with x = %d\n", x);
+    return x * 2;
+}
+
+void functionA(int y) {
+    if (y > 5) {
+        int result = functionB(y);
+        printf("Result from functionB: %d\n", result);
+    } else {
+        printf("y is too small for functionB\n");
+    }
+}
+
+int main() {
+int value ;
+scanf("%d", &value);
+    if (value > 0) {
+        functionA(value);
+    } else {
+        printf("Value is non-positive\n");
+    }
+    return 0;
+}
+
+
+2024-11-13 10:42:59,578 - DEBUG - 
+Function Name: functionB 
+Return Type: int 
+Arguments: {'x': 'int'} 
+Content: 
+printf("In functionB with x = %d\n", x);
+    return x * 2;
+
+2024-11-13 10:42:59,578 - DEBUG - 
+Function Name: functionA 
+Return Type: void 
+Arguments: {'y': 'int'} 
+Content: 
+if (y > 5) {
+        int result = functionB(y);
+        printf("Result from functionB: %d\n", result);
+    } else {
+        printf("y is too small for functionB\n");
+    }
+
+2024-11-13 10:42:59,578 - DEBUG - 
+Function Name: main 
+Return Type: int 
+Arguments: {} 
+Content: 
+int value ;
+scanf("%d", &value);
+    if (value > 0) {
+        functionA(value);
+    } else {
+        printf("Value is non-positive\n");
+    }
+    return 0;
+
+2024-11-13 10:42:59,578 - DEBUG - statement: int value ;
+2024-11-13 10:42:59,578 - DEBUG - call func: scanf("%d", &value)
+2024-11-13 10:42:59,578 - DEBUG - call function: scanf
+2024-11-13 10:42:59,578 - WARNING - Failed to find function state `scanf`.
+2024-11-13 10:42:59,578 - DEBUG - if block: if (value > 0) {
+        functionA(value);
+    }
+2024-11-13 10:42:59,583 - DEBUG - if body: functionA(value);
+2024-11-13 10:42:59,583 - DEBUG - call func: functionA(value)
+2024-11-13 10:42:59,583 - DEBUG - call function: functionA
+2024-11-13 10:42:59,583 - DEBUG - args: var - value  arg - y
+2024-11-13 10:42:59,583 - DEBUG - replaced content preview: if (value > 5) {
+        int result = functionB(value);
+        printf("Result from functionB: %d\n", result);
+    } else {
+        printf("y is too small for functionB\n");
+    }
+2024-11-13 10:42:59,584 - DEBUG - if block: if (value > 5) {
+        int result = functionB(value);
+        printf("Result from functionB: %d\n", result);
+    }
+2024-11-13 10:42:59,584 - DEBUG - if body: int result = functionB(value); printf("Result from functionB: %d\n", result);
+2024-11-13 10:42:59,584 - DEBUG - assign func: int result = functionB(
+2024-11-13 10:42:59,585 - DEBUG - assign function: result from functionB
+2024-11-13 10:42:59,585 - DEBUG - call func: printf("In functionB with x = %d\n", x)
+2024-11-13 10:42:59,585 - DEBUG - call function: printf
+2024-11-13 10:42:59,585 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:42:59,585 - DEBUG - statement: return x * 2;
+2024-11-13 10:42:59,585 - DEBUG - return: x * 2
+
+2024-11-13 10:42:59,586 - DEBUG - call func: printf("Result from functionB: %d\n", result)
+2024-11-13 10:42:59,586 - DEBUG - call function: printf
+2024-11-13 10:42:59,586 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:42:59,586 - DEBUG - else block: else {
+        printf("y is too small for functionB\n");
+    }
+2024-11-13 10:42:59,586 - DEBUG - else body: printf("y is too small for functionB\n");
+2024-11-13 10:42:59,587 - DEBUG - call func: printf("y is too small for functionB\n")
+2024-11-13 10:42:59,587 - DEBUG - call function: printf
+2024-11-13 10:42:59,587 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:42:59,587 - DEBUG - else block: else {
+        printf("Value is non-positive\n");
+    }
+2024-11-13 10:42:59,587 - DEBUG - else body: printf("Value is non-positive\n");
+2024-11-13 10:42:59,587 - DEBUG - call func: printf("Value is non-positive\n")
+2024-11-13 10:42:59,587 - DEBUG - call function: printf
+2024-11-13 10:42:59,587 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:42:59,587 - DEBUG - statement: return 0;
+2024-11-13 10:42:59,587 - DEBUG - return: 0
+
+2024-11-13 10:42:59,587 - DEBUG - INNER PARSING OUTPUT:
+2024-11-13 10:42:59,587 - DEBUG - walkthrough list: [['main', 'functionA', 'functionB'], ['main', 'functionA'], ['main', 'functionA'], ['main', 'functionA'], ['main'], ['main'], ['main']]
+2024-11-13 10:42:59,587 - DEBUG - conditions  list: [' and value > 0 and value > 5', ' and value > 0 and value > 5', ' and value > 0 and not value > 5', ' and value > 0', ' and value > 0', ' and not value > 0', '']
+2024-11-13 10:42:59,587 - DEBUG - relatives   list: ['<functionA(), result> = <functionB(), return value>']
+2024-11-13 10:42:59,587 - DEBUG - ######################## REAL ANSWER BELOW ########################
+2024-11-13 10:42:59,587 - DEBUG - walkthrough list: ['main -> functionA -> functionB', 'main', 'main', 'main -> functionA', 'main -> functionA']
+2024-11-13 10:42:59,587 - DEBUG - conditions  list: ['value > 0 and value > 5', '', 'not value > 0', 'value > 0', 'value > 0 and not value > 5']
+2024-11-13 10:42:59,587 - DEBUG - relatives   list: ['<functionA(), result> = <functionB(), return value>']
+2024-11-13 10:42:59,587 - DEBUG - prev cond batch: not value > 0
+2024-11-13 10:42:59,587 - DEBUG - post cond batch: value <= 0
+2024-11-13 10:42:59,587 - DEBUG - prev cond batch: not value > 5
+2024-11-13 10:42:59,587 - DEBUG - post cond batch: value <= 5
+2024-11-13 10:43:01,855 - DEBUG - src_code: #include <stdio.h>
+
+int functionB(int x) {
+    printf("In functionB with x = %d\n", x);
+    return x * 2;
+}
+
+void functionA(int y) {
+    if (y > 5) {
+        int result = functionB(y);
+        printf("Result from functionB: %d\n", result);
+    } else {
+        printf("y is too small for functionB\n");
+    }
+}
+
+int main() {
+int value ;
+scanf("%d", &value);
+    if (value > 0) {
+        functionA(value);
+    } else {
+        printf("Value is non-positive\n");
+    }
+    return 0;
+}
+
+
+2024-11-13 10:43:01,855 - DEBUG - 
+Function Name: functionB 
+Return Type: int 
+Arguments: {'x': 'int'} 
+Content: 
+printf("In functionB with x = %d\n", x);
+    return x * 2;
+
+2024-11-13 10:43:01,855 - DEBUG - 
+Function Name: functionA 
+Return Type: void 
+Arguments: {'y': 'int'} 
+Content: 
+if (y > 5) {
+        int result = functionB(y);
+        printf("Result from functionB: %d\n", result);
+    } else {
+        printf("y is too small for functionB\n");
+    }
+
+2024-11-13 10:43:01,855 - DEBUG - 
+Function Name: main 
+Return Type: int 
+Arguments: {} 
+Content: 
+int value ;
+scanf("%d", &value);
+    if (value > 0) {
+        functionA(value);
+    } else {
+        printf("Value is non-positive\n");
+    }
+    return 0;
+
+2024-11-13 10:43:01,855 - DEBUG - statement: int value ;
+2024-11-13 10:43:01,855 - DEBUG - call func: scanf("%d", &value)
+2024-11-13 10:43:01,855 - DEBUG - call function: scanf
+2024-11-13 10:43:01,855 - WARNING - Failed to find function state `scanf`.
+2024-11-13 10:43:01,855 - DEBUG - if block: if (value > 0) {
+        functionA(value);
+    }
+2024-11-13 10:43:01,866 - DEBUG - if body: functionA(value);
+2024-11-13 10:43:01,866 - DEBUG - call func: functionA(value)
+2024-11-13 10:43:01,866 - DEBUG - call function: functionA
+2024-11-13 10:43:01,866 - DEBUG - args: var - value  arg - y
+2024-11-13 10:43:01,866 - DEBUG - replaced content preview: if (value > 5) {
+        int result = functionB(value);
+        printf("Result from functionB: %d\n", result);
+    } else {
+        printf("y is too small for functionB\n");
+    }
+2024-11-13 10:43:01,867 - DEBUG - if block: if (value > 5) {
+        int result = functionB(value);
+        printf("Result from functionB: %d\n", result);
+    }
+2024-11-13 10:43:01,868 - DEBUG - if body: int result = functionB(value); printf("Result from functionB: %d\n", result);
+2024-11-13 10:43:01,868 - DEBUG - assign func: int result = functionB(
+2024-11-13 10:43:01,868 - DEBUG - assign function: result from functionB
+2024-11-13 10:43:01,869 - DEBUG - call func: printf("In functionB with x = %d\n", x)
+2024-11-13 10:43:01,869 - DEBUG - call function: printf
+2024-11-13 10:43:01,869 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:43:01,869 - DEBUG - statement: return x * 2;
+2024-11-13 10:43:01,869 - DEBUG - return: x * 2
+
+2024-11-13 10:43:01,869 - DEBUG - call func: printf("Result from functionB: %d\n", result)
+2024-11-13 10:43:01,870 - DEBUG - call function: printf
+2024-11-13 10:43:01,870 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:43:01,870 - DEBUG - else block: else {
+        printf("y is too small for functionB\n");
+    }
+2024-11-13 10:43:01,870 - DEBUG - else body: printf("y is too small for functionB\n");
+2024-11-13 10:43:01,870 - DEBUG - call func: printf("y is too small for functionB\n")
+2024-11-13 10:43:01,870 - DEBUG - call function: printf
+2024-11-13 10:43:01,871 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:43:01,871 - DEBUG - else block: else {
+        printf("Value is non-positive\n");
+    }
+2024-11-13 10:43:01,871 - DEBUG - else body: printf("Value is non-positive\n");
+2024-11-13 10:43:01,871 - DEBUG - call func: printf("Value is non-positive\n")
+2024-11-13 10:43:01,871 - DEBUG - call function: printf
+2024-11-13 10:43:01,872 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:43:01,872 - DEBUG - statement: return 0;
+2024-11-13 10:43:01,872 - DEBUG - return: 0
+
+2024-11-13 10:43:01,872 - DEBUG - INNER PARSING OUTPUT:
+2024-11-13 10:43:01,872 - DEBUG - walkthrough list: [['main', 'functionA', 'functionB'], ['main', 'functionA'], ['main', 'functionA'], ['main', 'functionA'], ['main'], ['main'], ['main']]
+2024-11-13 10:43:01,872 - DEBUG - conditions  list: [' and value > 0 and value > 5', ' and value > 0 and value > 5', ' and value > 0 and not value > 5', ' and value > 0', ' and value > 0', ' and not value > 0', '']
+2024-11-13 10:43:01,872 - DEBUG - relatives   list: ['<functionA(), result> = <functionB(), return value>']
+2024-11-13 10:43:01,872 - DEBUG - ######################## REAL ANSWER BELOW ########################
+2024-11-13 10:43:01,872 - DEBUG - walkthrough list: ['main -> functionA -> functionB', 'main', 'main', 'main -> functionA', 'main -> functionA']
+2024-11-13 10:43:01,872 - DEBUG - conditions  list: ['value > 0 and value > 5', '', 'not value > 0', 'value > 0', 'value > 0 and not value > 5']
+2024-11-13 10:43:01,872 - DEBUG - relatives   list: ['<functionA(), result> = <functionB(), return value>']
+2024-11-13 10:43:01,872 - DEBUG - prev cond batch: not value > 0
+2024-11-13 10:43:01,872 - DEBUG - post cond batch: value <= 0
+2024-11-13 10:43:01,872 - DEBUG - prev cond batch: not value > 5
+2024-11-13 10:43:01,872 - DEBUG - post cond batch: value <= 5
+2024-11-13 10:43:19,363 - DEBUG - src_code: #include <stdio.h>
+
+void functionD() {
+    printf("In functionD\n");
+}
+
+int functionC(int x) {
+    printf("In functionC with x = %d\n", x);
+    return x + 1;
+}
+
+void functionB(double y) {
+    int result = functionC(5);
+    printf("Result from functionC: %d\n", result);
+}
+
+void functionA() {
+    functionB(2.0);
+    functionD();
+}
+
+int main() {
+    printf("In main\n");
+    functionA();
+    return 0;
+}
+
+
+2024-11-13 10:43:19,378 - DEBUG - 
+Function Name: functionD 
+Return Type: void 
+Arguments: {} 
+Content: 
+printf("In functionD\n");
+
+2024-11-13 10:43:19,378 - DEBUG - 
+Function Name: functionC 
+Return Type: int 
+Arguments: {'x': 'int'} 
+Content: 
+printf("In functionC with x = %d\n", x);
+    return x + 1;
+
+2024-11-13 10:43:19,384 - DEBUG - 
+Function Name: functionB 
+Return Type: void 
+Arguments: {'y': 'double'} 
+Content: 
+int result = functionC(5);
+    printf("Result from functionC: %d\n", result);
+
+2024-11-13 10:43:19,385 - DEBUG - 
+Function Name: functionA 
+Return Type: void 
+Arguments: {} 
+Content: 
+functionB(2.0);
+    functionD();
+
+2024-11-13 10:43:19,385 - DEBUG - 
+Function Name: main 
+Return Type: int 
+Arguments: {} 
+Content: 
+printf("In main\n");
+    functionA();
+    return 0;
+
+2024-11-13 10:43:19,386 - DEBUG - call func: printf("In main\n")
+2024-11-13 10:43:19,386 - DEBUG - call function: printf
+2024-11-13 10:43:19,386 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:43:19,387 - DEBUG - call func: functionA()
+2024-11-13 10:43:19,387 - DEBUG - call function: functionA
+2024-11-13 10:43:19,387 - DEBUG - call func: functionB(2.0)
+2024-11-13 10:43:19,387 - DEBUG - call function: functionB
+2024-11-13 10:43:19,387 - DEBUG - args: var - 2.0  arg - y
+2024-11-13 10:43:19,387 - DEBUG - replaced content preview: int result = functionC(5);
+    printf("Result from functionC: %d\n", result);
+2024-11-13 10:43:19,387 - DEBUG - assign func: int result = functionC(
+2024-11-13 10:43:19,387 - DEBUG - assign function: result from functionC
+2024-11-13 10:43:19,387 - DEBUG - call func: printf("In functionC with x = %d\n", x)
+2024-11-13 10:43:19,387 - DEBUG - call function: printf
+2024-11-13 10:43:19,387 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:43:19,387 - DEBUG - statement: return x + 1;
+2024-11-13 10:43:19,387 - DEBUG - return: x + 1
+
+2024-11-13 10:43:19,390 - DEBUG - call func: printf("Result from functionC: %d\n", result)
+2024-11-13 10:43:19,390 - DEBUG - call function: printf
+2024-11-13 10:43:19,390 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:43:19,390 - DEBUG - call func: functionD()
+2024-11-13 10:43:19,390 - DEBUG - call function: functionD
+2024-11-13 10:43:19,390 - DEBUG - call func: printf("In functionD\n")
+2024-11-13 10:43:19,391 - DEBUG - call function: printf
+2024-11-13 10:43:19,391 - WARNING - Failed to find function state `printf`.
+2024-11-13 10:43:19,391 - DEBUG - statement: return 0;
+2024-11-13 10:43:19,391 - DEBUG - return: 0
+
+2024-11-13 10:43:19,391 - DEBUG - INNER PARSING OUTPUT:
+2024-11-13 10:43:19,391 - DEBUG - walkthrough list: [['main', 'functionA', 'functionB', 'functionC'], ['main', 'functionA', 'functionB'], ['main', 'functionA', 'functionD'], ['main', 'functionA'], ['main']]
+2024-11-13 10:43:19,391 - DEBUG - conditions  list: ['', '', '', '', '']
+2024-11-13 10:43:19,392 - DEBUG - relatives   list: ['<functionB(), result> = <functionC(), return value>']
+2024-11-13 10:43:19,392 - DEBUG - ######################## REAL ANSWER BELOW ########################
+2024-11-13 10:43:19,392 - DEBUG - walkthrough list: ['main -> functionA -> functionB -> functionC -> functionD']
+2024-11-13 10:43:19,392 - DEBUG - conditions  list: ['']
+2024-11-13 10:43:19,392 - DEBUG - relatives   list: ['<functionB(), result> = <functionC(), return value>']
