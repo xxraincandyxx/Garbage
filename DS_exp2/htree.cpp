@@ -48,30 +48,30 @@ class HuffmanTree {
         }
     }
 
-    void preorder() const {
+    void preorder(bool simplified = false) const {
         if (root == nullptr) {
             std::cout << "None" << std::endl;
             return;
         }
-        preorder_traversal(root);
+        preorder_traversal(root, simplified);
         std::cout << std::endl;
     }
 
-    void inorder() const {
+    void inorder(bool simplified = false) const {
         if (root == nullptr) {
             std::cout << "None" << std::endl;
             return;
         }
-        inorder_traversal(root);
+        inorder_traversal(root, simplified);
         std::cout << std::endl;
     }
 
-    void postorder() const {
+    void postorder(bool simplified = false) const {
         if (root == nullptr) {
             std::cout << "None" << std::endl;
             return;
         }
-        postorder_traversal(root);
+        postorder_traversal(root, simplified);
         std::cout << std::endl;
     }
 
@@ -84,28 +84,40 @@ class HuffmanTree {
     hfNode* root;
     std::unordered_map<char, std::string> codemap;
 
-    void preorder_traversal(hfNode* node) const {
+    void preorder_traversal(hfNode* node, bool simplified = false) const {
         if (node == nullptr) return;
-        std::cout << "Character: " << node->ch << ' ' << std::endl;
-        std::cout << "freq: " << node->freq << std::endl << std::endl;
-        preorder_traversal(node->left);
-        preorder_traversal(node->right);
+        if (simplified) {
+            std::cout << node->ch << ' ' << node->freq << "  ";
+        } else {
+            std::cout << "Character: " << node->ch << ' ' << std::endl;
+            std::cout << "freq: " << node->freq << std::endl << std::endl;
+        }
+        preorder_traversal(node->left, simplified);
+        preorder_traversal(node->right, simplified);
     }
 
-    void inorder_traversal(hfNode* node) const {
+    void inorder_traversal(hfNode* node, bool simplified = false) const {
         if (node == nullptr) return;
-        inorder_traversal(node->left);
-        std::cout << "Character: " << node->ch << ' ' << std::endl;
-        std::cout << "freq: " << node->freq << std::endl << std::endl;
-        inorder_traversal(node->right);
+        inorder_traversal(node->left, simplified);
+        if (simplified) {
+            std::cout << node->ch << ' ' << node->freq << "  ";
+        } else {
+            std::cout << "Character: " << node->ch << ' ' << std::endl;
+            std::cout << "freq: " << node->freq << std::endl << std::endl;
+        }
+        inorder_traversal(node->right, simplified);
     }
 
-    void postorder_traversal(hfNode* node) const {
+    void postorder_traversal(hfNode* node, bool simplified = false) const {
         if (node == nullptr) return;
-        postorder_traversal(node->left);
-        postorder_traversal(node->right);
-        std::cout << "Character: " << node->ch << ' ' << std::endl;
-        std::cout << "Frequency: " << node->freq << std::endl << std::endl;
+        postorder_traversal(node->left, simplified);
+        postorder_traversal(node->right, simplified);
+        if (simplified) {
+            std::cout << node->ch << ' ' << node->freq << "  ";
+        } else {
+            std::cout << "Character: " << node->ch << ' ' << std::endl;
+            std::cout << "freq: " << node->freq << std::endl << std::endl;
+        }
     }
 
     void rm_branch(hfNode* node) {
@@ -179,7 +191,7 @@ int main(void) {
                                               {'D', 13}, {'E', 16}, {'F', 45}};
 
     root.build(freq_map);
-    root.preorder();
+    root.preorder(true);
     // root.inorder();
     // root.postorder();
 
