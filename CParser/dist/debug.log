@@ -1,100 +1,148 @@
-2024-11-21 08:37:12,019 - DEBUG - src_code: #include <stdio.h>
+2024-12-12 15:42:41,820 - DEBUG - src_code: #include <stdio.h>
 
-void functionA(int x, int y, int z) {
-    printf("In functionA with parameter x = %d\n", x);
+int functionB(int x) {
+    printf("In functionB with parameter x = %d\n", x);
+    return x * 2;
+}
+
+void functionA(double y) {
+    int result = functionB(10);
+    printf("Result from functionB: %d\n", result);
 }
 
 int main() {
     printf("In main\n");
-    functionA(5, 6, 7);
+    functionA(5.5);
     return 0;
 }
 
 
-2024-11-21 08:37:12,019 - DEBUG - 
+2024-12-12 15:42:41,823 - DEBUG - 
+Function Name: functionB 
+Return Type: int 
+Arguments: {'x': 'int'} 
+Content: 
+printf("In functionB with parameter x = %d\n", x);
+    return x * 2;
+
+2024-12-12 15:42:41,823 - DEBUG - 
 Function Name: functionA 
 Return Type: void 
-Arguments: {'x': 'int', 'y': 'int', 'z': 'int'} 
+Arguments: {'y': 'double'} 
 Content: 
-printf("In functionA with parameter x = %d\n", x);
+int result = functionB(10);
+    printf("Result from functionB: %d\n", result);
 
-2024-11-21 08:37:12,019 - DEBUG - 
+2024-12-12 15:42:41,824 - DEBUG - 
 Function Name: main 
 Return Type: int 
 Arguments: {} 
 Content: 
 printf("In main\n");
-    functionA(5, 6, 7);
+    functionA(5.5);
     return 0;
 
-2024-11-21 08:37:12,019 - DEBUG - call func: printf("In main\n")
-2024-11-21 08:37:12,019 - DEBUG - call function: printf
-2024-11-21 08:37:12,032 - WARNING - Failed to find function state `printf`.
-2024-11-21 08:37:12,032 - DEBUG - call func: functionA(5, 6, 7)
-2024-11-21 08:37:12,032 - DEBUG - call function: functionA
-2024-11-21 08:37:12,032 - DEBUG - args: var - 5, 6, 7  arg - x
-2024-11-21 08:37:12,032 - DEBUG - replaced content preview: printf("In functionA with parameter x = %d\n", 5, 6, 7);
-2024-11-21 08:37:12,032 - DEBUG - call func: printf("In functionA with parameter x = %d\n", 5, 6, 7)
-2024-11-21 08:37:12,032 - DEBUG - call function: printf
-2024-11-21 08:37:12,032 - WARNING - Failed to find function state `printf`.
-2024-11-21 08:37:12,032 - DEBUG - statement: return 0;
-2024-11-21 08:37:12,032 - DEBUG - return: 0
+2024-12-12 15:42:41,824 - DEBUG - call func: printf("In main\n")
+2024-12-12 15:42:41,824 - DEBUG - call function: printf
+2024-12-12 15:42:41,824 - WARNING - Failed to find function state `printf`.
+2024-12-12 15:42:41,824 - DEBUG - call func: functionA(5.5)
+2024-12-12 15:42:41,824 - DEBUG - call function: functionA
+2024-12-12 15:42:41,824 - DEBUG - args: var - 5.5  arg - y
+2024-12-12 15:42:41,825 - DEBUG - replaced content preview: int result = functionB(10);
+    printf("Result from functionB: %d\n", result);
+2024-12-12 15:42:41,825 - DEBUG - assign func: int result = functionB(
+2024-12-12 15:42:41,825 - DEBUG - assign function: result from functionB
+2024-12-12 15:42:41,825 - DEBUG - call func: printf("In functionB with parameter x = %d\n", x)
+2024-12-12 15:42:41,825 - DEBUG - call function: printf
+2024-12-12 15:42:41,826 - WARNING - Failed to find function state `printf`.
+2024-12-12 15:42:41,826 - DEBUG - statement: return x * 2;
+2024-12-12 15:42:41,826 - DEBUG - return: x * 2
 
-2024-11-21 08:37:12,032 - DEBUG - INNER PARSING OUTPUT:
-2024-11-21 08:37:12,032 - DEBUG - walkthrough list: [['main', 'functionA'], ['main']]
-2024-11-21 08:37:12,032 - DEBUG - conditions  list: ['', '']
-2024-11-21 08:37:12,032 - DEBUG - relatives   list: []
-2024-11-21 08:37:12,032 - DEBUG - ######################## REAL ANSWER BELOW ########################
-2024-11-21 08:37:12,032 - DEBUG - walkthrough list: ['main -> functionA']
-2024-11-21 08:37:12,032 - DEBUG - conditions  list: ['']
-2024-11-21 08:37:12,032 - DEBUG - relatives   list: []
-2024-11-21 08:37:13,808 - DEBUG - src_code: #include <stdio.h>
+2024-12-12 15:42:41,826 - DEBUG - call func: printf("Result from functionB: %d\n", result)
+2024-12-12 15:42:41,826 - DEBUG - call function: printf
+2024-12-12 15:42:41,826 - WARNING - Failed to find function state `printf`.
+2024-12-12 15:42:41,826 - DEBUG - statement: return 0;
+2024-12-12 15:42:41,826 - DEBUG - return: 0
 
-void functionA(int x, int y, int z) {
-    printf("In functionA with parameter x = %d\n", x);
+2024-12-12 15:42:41,827 - DEBUG - INNER PARSING OUTPUT:
+2024-12-12 15:42:41,827 - DEBUG - walkthrough list: [['main', 'functionA', 'functionB'], ['main', 'functionA'], ['main']]
+2024-12-12 15:42:41,827 - DEBUG - conditions  list: ['', '', '']
+2024-12-12 15:42:41,827 - DEBUG - relatives   list: ['<functionA(), result> = <functionB(), return value>']
+2024-12-12 15:42:41,828 - DEBUG - ######################## REAL ANSWER BELOW ########################
+2024-12-12 15:42:41,828 - DEBUG - walkthrough list: ['main -> functionA -> functionB']
+2024-12-12 15:42:41,828 - DEBUG - conditions  list: ['']
+2024-12-12 15:42:41,828 - DEBUG - relatives   list: ['<functionA(), result> = <functionB(), return value>']
+2024-12-12 15:42:44,355 - DEBUG - src_code: #include <stdio.h>
+
+int functionB(int x) {
+    printf("In functionB with parameter x = %d\n", x);
+    return x * 2;
+}
+
+void functionA(double y) {
+    int result = functionB(10);
+    printf("Result from functionB: %d\n", result);
 }
 
 int main() {
     printf("In main\n");
-    functionA(5, 6, 7);
+    functionA(5.5);
     return 0;
 }
 
 
-2024-11-21 08:37:13,808 - DEBUG - 
+2024-12-12 15:42:44,356 - DEBUG - 
+Function Name: functionB 
+Return Type: int 
+Arguments: {'x': 'int'} 
+Content: 
+printf("In functionB with parameter x = %d\n", x);
+    return x * 2;
+
+2024-12-12 15:42:44,357 - DEBUG - 
 Function Name: functionA 
 Return Type: void 
-Arguments: {'x': 'int', 'y': 'int', 'z': 'int'} 
+Arguments: {'y': 'double'} 
 Content: 
-printf("In functionA with parameter x = %d\n", x);
+int result = functionB(10);
+    printf("Result from functionB: %d\n", result);
 
-2024-11-21 08:37:13,808 - DEBUG - 
+2024-12-12 15:42:44,357 - DEBUG - 
 Function Name: main 
 Return Type: int 
 Arguments: {} 
 Content: 
 printf("In main\n");
-    functionA(5, 6, 7);
+    functionA(5.5);
     return 0;
 
-2024-11-21 08:37:13,808 - DEBUG - call func: printf("In main\n")
-2024-11-21 08:37:13,808 - DEBUG - call function: printf
-2024-11-21 08:37:13,808 - WARNING - Failed to find function state `printf`.
-2024-11-21 08:37:13,808 - DEBUG - call func: functionA(5, 6, 7)
-2024-11-21 08:37:13,808 - DEBUG - call function: functionA
-2024-11-21 08:37:13,808 - DEBUG - args: var - 5, 6, 7  arg - x
-2024-11-21 08:37:13,808 - DEBUG - replaced content preview: printf("In functionA with parameter x = %d\n", 5, 6, 7);
-2024-11-21 08:37:13,808 - DEBUG - call func: printf("In functionA with parameter x = %d\n", 5, 6, 7)
-2024-11-21 08:37:13,808 - DEBUG - call function: printf
-2024-11-21 08:37:13,808 - WARNING - Failed to find function state `printf`.
-2024-11-21 08:37:13,808 - DEBUG - statement: return 0;
-2024-11-21 08:37:13,808 - DEBUG - return: 0
+2024-12-12 15:42:44,357 - DEBUG - call func: printf("In main\n")
+2024-12-12 15:42:44,358 - DEBUG - call function: printf
+2024-12-12 15:42:44,358 - WARNING - Failed to find function state `printf`.
+2024-12-12 15:42:44,358 - DEBUG - call func: functionA(5.5)
+2024-12-12 15:42:44,358 - DEBUG - call function: functionA
+2024-12-12 15:42:44,358 - DEBUG - args: var - 5.5  arg - y
+2024-12-12 15:42:44,358 - DEBUG - replaced content preview: int result = functionB(10);
+    printf("Result from functionB: %d\n", result);
+2024-12-12 15:42:44,358 - DEBUG - assign func: int result = functionB(
+2024-12-12 15:42:44,358 - DEBUG - assign function: result from functionB
+2024-12-12 15:42:44,358 - DEBUG - call func: printf("In functionB with parameter x = %d\n", x)
+2024-12-12 15:42:44,359 - DEBUG - call function: printf
+2024-12-12 15:42:44,359 - WARNING - Failed to find function state `printf`.
+2024-12-12 15:42:44,359 - DEBUG - statement: return x * 2;
+2024-12-12 15:42:44,359 - DEBUG - return: x * 2
 
-2024-11-21 08:37:13,808 - DEBUG - INNER PARSING OUTPUT:
-2024-11-21 08:37:13,808 - DEBUG - walkthrough list: [['main', 'functionA'], ['main']]
-2024-11-21 08:37:13,808 - DEBUG - conditions  list: ['', '']
-2024-11-21 08:37:13,808 - DEBUG - relatives   list: []
-2024-11-21 08:37:13,808 - DEBUG - ######################## REAL ANSWER BELOW ########################
-2024-11-21 08:37:13,808 - DEBUG - walkthrough list: ['main -> functionA']
-2024-11-21 08:37:13,808 - DEBUG - conditions  list: ['']
-2024-11-21 08:37:13,808 - DEBUG - relatives   list: []
+2024-12-12 15:42:44,359 - DEBUG - call func: printf("Result from functionB: %d\n", result)
+2024-12-12 15:42:44,359 - DEBUG - call function: printf
+2024-12-12 15:42:44,359 - WARNING - Failed to find function state `printf`.
+2024-12-12 15:42:44,360 - DEBUG - statement: return 0;
+2024-12-12 15:42:44,360 - DEBUG - return: 0
+
+2024-12-12 15:42:44,360 - DEBUG - INNER PARSING OUTPUT:
+2024-12-12 15:42:44,360 - DEBUG - walkthrough list: [['main', 'functionA', 'functionB'], ['main', 'functionA'], ['main']]
+2024-12-12 15:42:44,360 - DEBUG - conditions  list: ['', '', '']
+2024-12-12 15:42:44,360 - DEBUG - relatives   list: ['<functionA(), result> = <functionB(), return value>']
+2024-12-12 15:42:44,360 - DEBUG - ######################## REAL ANSWER BELOW ########################
+2024-12-12 15:42:44,360 - DEBUG - walkthrough list: ['main -> functionA -> functionB']
+2024-12-12 15:42:44,360 - DEBUG - conditions  list: ['']
+2024-12-12 15:42:44,360 - DEBUG - relatives   list: ['<functionA(), result> = <functionB(), return value>']

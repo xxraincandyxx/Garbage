@@ -141,14 +141,16 @@ void Graph::dfs(int start_vertex) const{
     return;
 }
 
-void breath_first_search(int start_vertex, vector<bool>& visited) {
+void Graph::bfs_utils(int start_vertex, vector<bool>& visited) const{
     visited[start_vertex] = true;
-    queue<int> queue;
+    queue<int> queue; // queue for bfs
     queue.push(start_vertex);
+
     while(!queue.empty()){
         int vertex = queue.front();
         queue.pop();
         cout << " -> " << vertex;
+
         Node* curr_vertex = adjacency[vertex];
         while(curr_vertex != nullptr){
             int next_vertex = curr_vertex->adjVex;
@@ -162,7 +164,17 @@ void breath_first_search(int start_vertex, vector<bool>& visited) {
     return;
 }
 
-void algofoo (int start_vertex) const{
+void Graph::bfs(int start_vertex) const{
+    cout << "bfs: from vertex <" << start_vertex << ">: ";
+    vector<bool> visited(n, false);
+    
+    // use the utils of dfs
+    bfs_utils(start_vertex, visited);
+    cout << endl;
+    return;
+}
+
+void (int start_vertex) const{
     priority_queue<pair<int, int>, vector<pair<int, int>>, Compare> open;
     vector<bool> visited(n, false);
     open.push({0, start_vertex});

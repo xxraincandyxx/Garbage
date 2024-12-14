@@ -88,6 +88,27 @@ class mGraph {
         }
     }
 
+    void shortest_path(int val) {
+        std::vector<int> dist(n, INT_MAX);
+        std::vector<int> prev(n, -1);
+        std::vector<bool> visited(n, false);
+        std::function<void(int)> dfs = [&](int u) {
+            visited[u] = true;
+            for (int v = 0; v < n; v++) {
+                if (!adj->at(u)[v] || visited[v]) continue;
+                dist[v] = std::min(dist[v], dist[u] + adj->at(u)[v]);
+                prev[v] = u;
+                dfs(v);
+            }
+        };
+        std::cout << "shortest path from [" << val << "]: " << std::endl;
+        dfs(val);
+        for (int i = 0; i < n; i++) {
+            if (dist[i] == INT_MAX) continue;
+            std::cout << "to " << i << ": " << dist[i] << std::endl;
+        }
+    }
+
    private:
     int n, e;
     std::vector<std::vector<int>>* adj;

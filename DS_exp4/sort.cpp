@@ -3,8 +3,87 @@
 #include <vector>
 #include <queue>
 
+struct btNode {
+    int val;
+    btNode* left;
+    btNode* right;
+
+    btNode(int val)
+        : val(val), left(nullptr), right(nullptr) {}
+};
+
+class MinHeap {
+   public:
+    MinHeap() : root(nullptr) {}
+
+    void build(const std::vector<int>& arr) {
+        for (auto val : arr) { _insert(val); }
+    }
+
+    void push(int val) {
+        if (root == nullptr) { return; }
+        _insert(val);
+    }
+
+    int pop() { return _delete(); }
+
+    void clear() {
+        _clear();
+    }
+
+   private:
+    btNode* root;
+
+    void _insert(int val) { root = _insert_node(root, val); }
+
+    int _delete() {
+        if (root == nullptr) { return -1; }
+        return _delete_min_node(root);
+    }
+
+    void _clear() {
+        _recur_clear(root);
+    }
+
+    void _recur_clear(btNode* node) {
+        if (node == nullptr) { return; }
+        _recur_clear(node->left);
+        _recur_clear(node->right);
+        delete node;
+        node = nullptr;
+    }
+
+    int _delete_min_node(btNode* node, btNode* parent = nullptr) {
+        if (node == nullptr) { return -1; }
+        if (node->left == nullptr) {
+            int val = node->val;
+            if (node->right != nullptr) {
+                parent->left = node->right;
+                delete node;
+                node = nullptr;
+                return val;
+            }
+            delete node;
+            node = nullptr;
+            if (parent != nullptr) parent->left = nullptr;
+            return val;
+        }
+        return _delete_min_node(node->left, node);
+    }
+
+    btNode* _insert_node(btNode* node, int val) {
+        if (node == nullptr) { return new btNode(val); }
+        if (val < node->val) {
+            node->left = _insert_node(node->left, val);
+        } else {
+            node->right = _insert_node(node->right, val);
+        }
+        return node;
+    }
+};
+
 class algo {
-public:
+   public:
 	algo(std::vector<int> seq) : seq(seq), bkup(seq) {}
 
 	void _output() {
@@ -84,7 +163,6 @@ public:
                 i++;
                 k++;
             }
-    
             while(j < rn) {
                 seq[k] = right[j];
                 j++;
@@ -115,7 +193,15 @@ public:
         }
     }
 
-private:
+    void fhsort() {
+        MinHeap min_heap;
+        min_heap.build(seq);
+        for (int i = 0; i < seq.size(); i++) {
+            seq[i] = min_heap.pop();
+        }
+    }
+
+   private:
 	std::vector<int> seq;
 	std::vector<int> bkup;
 };
@@ -129,7 +215,7 @@ int main(void) {
     std::cout << "chosen sort -> ";
 	seq._output();
 	seq._restore();
-	
+
     // insertion sort
     seq.isort();
     std::cout << "insert sort -> ";
@@ -157,6 +243,12 @@ int main(void) {
     // heap sort
     seq.hsort();
     std::cout << "heap sort -> ";
+    seq._output();
+    seq._restore();
+
+    // fast heap sort
+    seq.fhsort();
+    std::cout << "fast heap sort -> ";
     seq._output();
     seq._restore();
 
