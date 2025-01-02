@@ -1,12 +1,10 @@
 import os
-import re
 import logging
 import tkinter as tk
 from typing import Optional, Union, List, Any
 
 from cache_utils import FunctionStateCache
 from parsing import CodeParser
-from utils import load_cfile
 from docs import *
 
 

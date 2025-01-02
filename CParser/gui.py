@@ -1,6 +1,5 @@
 import logging
 import tkinter as tk
-from tkinter import ttk
 from tkinter import scrolledtext
 
 from utils import tk_load_cfile

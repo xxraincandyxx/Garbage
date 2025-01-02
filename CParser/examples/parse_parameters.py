@@ -1,6 +1,5 @@
 ### 4. `parse_parameters.py`
 import re
-import sys
 from utils import extract_function_body, extract_loop_count, extract_loop_body
 
 import logging

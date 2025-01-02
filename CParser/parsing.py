@@ -1,9 +1,8 @@
-import os
 import re
 import logging
 from typing import Dict, List, Tuple
 
-from utils import load_cfile, shrink_code
+from utils import shrink_code
 from cache_utils import FunctionStateCache, Cache
 
 
@@ -86,7 +85,7 @@ class CodeParser:
             )
 
         self._inner_parse()
-        logger.debug(f"INNER PARSING OUTPUT:")
+        logger.debug("INNER PARSING OUTPUT:")
         logger.debug(f"walkthrough list: {self.walkthrough_lst}")
         logger.debug(f"conditions  list: {self.conditions_lst}")
         logger.debug(f"relatives   list: {self.relatives_lst}")
@@ -206,7 +205,7 @@ class CodeParser:
             fct_name_set = set([])
             fct_name_lst = []
             for idx, fct_path_lst in enumerate(self.walkthrough_lst):
-                if not self.conditions_lst[idx] in cond:
+                if self.conditions_lst[idx] not in cond:
                     continue
                 for fn in fct_path_lst:
                     if fn in fct_name_set:
